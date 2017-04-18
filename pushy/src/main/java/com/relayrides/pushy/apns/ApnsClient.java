@@ -335,8 +335,6 @@ public class ApnsClient {
      *
      * @param pingIntervalMillis the ping interval for this client, in millis.
      *
-     * @return a reference to this builder
-     *
      * @since 0.10
      */
     protected void setPingInterval(final long pingIntervalMillis) {

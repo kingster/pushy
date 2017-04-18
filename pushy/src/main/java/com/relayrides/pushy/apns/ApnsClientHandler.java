@@ -74,10 +74,9 @@ class ApnsClientHandler extends Http2ConnectionHandler {
     private final ApnsClient apnsClient;
     private final String authority;
 
+    private long pingTimeoutMillis;
     private long nextPingId = new Random().nextLong();
     private ScheduledFuture<?> pingTimeoutFuture;
-
-    private static final int PING_TIMEOUT = 30; // seconds
 
     private static final String APNS_PATH_PREFIX = "/3/device/";
     private static final AsciiString APNS_EXPIRATION_HEADER = new AsciiString("apns-expiration");
@@ -247,6 +246,7 @@ class ApnsClientHandler extends Http2ConnectionHandler {
 
         this.apnsClient = apnsClient;
         this.authority = authority;
+        this.pingTimeoutMillis = Math.min(30_000, this.apnsClient.idlePingIntervalMillis/2);
     }
 
     @Override
@@ -361,7 +361,7 @@ class ApnsClientHandler extends Http2ConnectionHandler {
     @Override
     public void userEventTriggered(final ChannelHandlerContext context, final Object event) throws Exception {
         if (event instanceof IdleStateEvent) {
-            assert PING_TIMEOUT < this.apnsClient.idlePingIntervalMillis;
+            assert pingTimeoutMillis < this.apnsClient.idlePingIntervalMillis;
 
             log.trace("Sending ping due to inactivity.");
 
@@ -380,7 +380,7 @@ class ApnsClientHandler extends Http2ConnectionHandler {
                                 log.debug("Closing channel due to ping timeout.");
                                 future.channel().close();
                             }
-                        }, PING_TIMEOUT, TimeUnit.SECONDS);
+                        }, pingTimeoutMillis, TimeUnit.MILLISECONDS);
                     } else {
                         log.debug("Failed to write PING frame.", future.cause());
                         future.channel().close();
