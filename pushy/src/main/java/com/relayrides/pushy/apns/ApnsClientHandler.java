@@ -361,7 +361,7 @@ class ApnsClientHandler extends Http2ConnectionHandler {
     @Override
     public void userEventTriggered(final ChannelHandlerContext context, final Object event) throws Exception {
         if (event instanceof IdleStateEvent) {
-            assert PING_TIMEOUT < ApnsClient.PING_IDLE_TIME_MILLIS;
+            assert PING_TIMEOUT < this.apnsClient.idlePingIntervalMillis;
 
             log.trace("Sending ping due to inactivity.");
 
