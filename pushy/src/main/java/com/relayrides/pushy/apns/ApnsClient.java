@@ -209,6 +209,7 @@ public class ApnsClient {
                                         .build();
                             } else {
                                 apnsClientHandler = new ApnsClientHandler.ApnsClientHandlerBuilder()
+                                        .apnsClient(ApnsClient.this)
                                         .authority(authority)
                                         .build();
                             }

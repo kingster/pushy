@@ -53,7 +53,7 @@ public class TokenAuthenticationApnsClientHandler extends ApnsClientHandler {
     }
 
     protected TokenAuthenticationApnsClientHandler(final Http2ConnectionDecoder decoder, final Http2ConnectionEncoder encoder, final Http2Settings initialSettings, final String authority, final ApnsSigningKey signingKey) {
-        super(decoder, encoder, initialSettings, authority);
+        super(decoder, encoder, initialSettings, null, authority);
 
         Objects.requireNonNull(signingKey, "Signing key must not be null for token-based client handlers.");
         this.signingKey = signingKey;
